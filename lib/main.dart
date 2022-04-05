@@ -12,7 +12,7 @@ import "dart:math";
 //splash page later
 class backendFunction {
   static Future<http.Response> httpget(link) async {
-    final response = await http.get(link);
+    final response = await http.get(link, headers: {"Access-Control-Allow-Origin": "*"});
     return response;
   }
 
@@ -122,7 +122,7 @@ class backendFunction {
   static Future<bool> signup(u) async {
     var url1 =
         "https://postmanhack.pythonanywhere.com/placeholder/dfka12kflkk99j/userinfo/newuser";
-    var response = await http.post(Uri.parse(url1), body: {"username": u});
+    var response = await http.post(Uri.parse(url1), body: {"username": u}, headers: {"Access-Control-Allow-Origin": "*"});
     if (response.statusCode != 200) {
       print(response.statusCode);
     }
@@ -132,7 +132,7 @@ class backendFunction {
   static Future<bool> volunteer(index) async {
     var url1 =
         "https://postmanhack.pythonanywhere.com/placeholder/dfka12kflkk99j/interestedvolunteer/interest";
-    var response = await http.post(Uri.parse(url1), body: {
+    var response = await http.post(Uri.parse(url1), headers: {"Access-Control-Allow-Origin": "*"}, body: {
       "userid": userdict["userid"].toString(),
       "eid": events["data"][index]["eid"].toString()
     });
@@ -145,7 +145,7 @@ class backendFunction {
   static Future<bool> post(index, content) async {
     var url1 =
         "https://postmanhack.pythonanywhere.com/placeholder/dfka12kflkk99j/posts/post";
-    var response = await http.post(Uri.parse(url1), body: {
+    var response = await http.post(Uri.parse(url1), headers: {"Access-Control-Allow-Origin": "*"}, body: {
       "posteruserid": userdict["userid"].toString(),
       "eid_ref": events["data"][index]["eid"].toString(),
       "content": content
@@ -197,7 +197,7 @@ class backendFunction {
   static Future<bool> sendComment(index, comment) async {
     var url1 =
         "https://postmanhack.pythonanywhere.com/placeholder/dfka12kflkk99j/comments/comment";
-    var response = await http.post(Uri.parse(url1), body: {
+    var response = await http.post(Uri.parse(url1), headers: {"Access-Control-Allow-Origin": "*"}, body: {
       "pid": posts["data"][index]["pid"].toString(),
       "commentuserid": userdict["userid"].toString(),
       "comment": comment
@@ -610,10 +610,10 @@ _postPopup(context, i, msg) {
                           ))),
                   ElevatedButton(
                       onPressed: () {
-                        backendFunction.post(i, postc.text);
+                        backendFunction.post(i, postc.text).then((a){
                         Navigator.of(context).pop();
                         html.window.location.reload();
-                      },
+                        });},
                       child: Text("Post"))
                 ])));
       });
@@ -632,7 +632,8 @@ _eventPopup(context, i) {
               InkWell(
                   onTap: () {
                     Navigator.of(context).pop();
-                    _postPopup(context, i, "Talk about this event!");
+                    if (mapEquals(userdict, {})){_signupPopup(context);}
+                    else{_postPopup(context, i, "Talk about this event!");}
                   },
                   child: Icon(Icons.share)),
               Divider(color: Colors.black),
@@ -661,8 +662,9 @@ _eventPopup(context, i) {
                       onPressed: () {
                         backendFunction.volunteer(i).then((a) {
                           Navigator.of(context).pop();
-                          _postPopup(context, i,
-                              "Congratulations! Hope you enjoyed your volunteering experience. Tell everyone about it!");
+                          if (mapEquals(userdict, {})){_signupPopup(context);}
+                          else{_postPopup(context, i,
+                              "Congratulations! Hope you enjoyed your volunteering experience. Tell everyone about it!");}
                         });
                       },
                       child: Text("Volunteer now!"))),
