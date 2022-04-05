@@ -56,7 +56,7 @@ class backendFunction {
     }
   }
 
-  static Future<bool> getPosts() async {
+  static Future<bool> getEventsAndPosts() async {
     var url1 =
         "https://postmanhack.pythonanywhere.com/placeholder/dfka12kflkk99j/posts/getposts";
     var response = await httpget(Uri.parse(url1));
@@ -70,22 +70,19 @@ class backendFunction {
     }
     posts = data;
     posts["data"] = List<Map>.from(posts["data"]);
-    return true;
-  }
 
-  static Future<bool> getEvents() async {
-    var url1 =
+    var url2 =
         "https://postmanhack.pythonanywhere.com/placeholder/dfka12kflkk99j/eventlist/events";
-    var response = await httpget(Uri.parse(url1));
-    if (response.statusCode != 200) {
-      print(response.statusCode);
+    var response1 = await httpget(Uri.parse(url2));
+    if (response1.statusCode != 200) {
+      print(response1.statusCode);
       return false;
     }
-    var data = jsonDecode(response.body);
-    if (data["status"] == "failed") {
+    var data1 = jsonDecode(response1.body);
+    if (data1["status"] == "failed") {
       return false;
     }
-    events = data;
+    events = data1;
     events["data"] = List<Map>.from(events["data"]);
     return true;
   }
@@ -257,12 +254,11 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   final List<String> entries = <String>['A', 'B', 'C'];
   final List<int> colorCodes = <int>[600, 500, 100];
 
-  var _p, _e, _eo, _n;
+  var _ep, _eo, _n;
   @override
   initState() {
     super.initState();
-    _e = backendFunction.getEvents();
-    _p = backendFunction.getPosts();
+    _ep = backendFunction.getEventsAndPosts();
     _eo = backendFunction.getEventsother();
     _n = backendFunction.getNews();
   }
@@ -379,7 +375,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         Expanded(
           flex: 3,
           child: FutureBuilder(
-              future: _p,
+              future: _ep,
               builder: (context, AsyncSnapshot snapshot) {
                 if (!snapshot.hasData) {
                   return Center(child: CircularProgressIndicator());
@@ -497,7 +493,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
             child: Column(children: [
           Expanded(
               child: FutureBuilder(
-                  future: _e,
+                  future: _ep,
                   builder: (context, AsyncSnapshot snapshot) {
                     if (!snapshot.hasData) {
                       return Center(child: CircularProgressIndicator());
