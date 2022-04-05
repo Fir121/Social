@@ -8,6 +8,7 @@ import 'package:like_button/like_button.dart';
 import "dart:math";
 
 /* api exception handling! */
+//check posting
 //splash page later
 class backendFunction {
   static Future<http.Response> httpget(link) async {
@@ -90,7 +91,6 @@ class backendFunction {
   }
 
   static Future<bool> getEventsother() async {
-    print("hi");
     var url1 =
         "https://postmanhack.pythonanywhere.com/placeholder/dfka12kflkk99j/other/volunteerapi";
     var response = await httpget(Uri.parse(url1));
@@ -139,7 +139,6 @@ class backendFunction {
     if (response.statusCode != 200) {
       print(response.statusCode);
     }
-    print(response.body);
     return true;
   }
 
@@ -154,7 +153,6 @@ class backendFunction {
     if (response.statusCode != 200) {
       print(response.statusCode);
     }
-    print(response.body);
     return true;
   }
 
@@ -166,7 +164,6 @@ class backendFunction {
     if (response.statusCode != 200) {
       print(response.statusCode);
     }
-    print(response.body);
     var data = jsonDecode(response.body);
     data = List<Map>.from(data["data"]);
     return data;
@@ -180,21 +177,18 @@ class backendFunction {
     if (response.statusCode != 200) {
       print(response.statusCode);
     }
-    print(response.body);
     var data = jsonDecode(response.body);
     data = List<Map>.from(data["data"]);
     return data;
   }
 
   static Future getNews() async {
-    print("ews");
     var url1 =
         "https://postmanhack.pythonanywhere.com/placeholder/dfka12kflkk99j/other/newsapi";
     var response = await httpget(Uri.parse(url1));
     if (response.statusCode != 200) {
       print(response.statusCode);
     }
-    print(response.body);
     news = jsonDecode(response.body);
     news = List<Map>.from(news["articles"]);
     return news;
@@ -211,7 +205,6 @@ class backendFunction {
     if (response.statusCode != 200) {
       print(response.statusCode);
     }
-    print(response.body);
     return true;
   }
 
